@@ -34,12 +34,9 @@ where
         digest.update(p.compress().as_bytes());
         Scalar::from_hash(digest)
     };
-    for i in 1..ring.len() {
-        let prev = (index + i) % ring.len();
-        let curr = (index + 1 + i) % ring.len();
-        c[curr] = {
-            let p =
-                RistrettoPoint::vartime_double_scalar_mul_basepoint(&c[prev], ring[prev], &r[prev]);
+    for i in ((index + 1)..(index + ring.len())).map(|i| i % ring.len()) {
+        c[(i + 1) % ring.len()] = {
+            let p = RistrettoPoint::vartime_double_scalar_mul_basepoint(&c[i], ring[i], &r[i]);
             let mut digest = digest.clone();
             digest.update(p.compress().as_bytes());
             Scalar::from_hash(digest)
@@ -64,11 +61,8 @@ where
     let mut c = vec![Scalar::ZERO; ring.len()];
     c[0] = c0;
     for i in 0..ring.len() {
-        let prev = i % ring.len();
-        let curr = (i + 1) % ring.len();
-        c[curr] = {
-            let p =
-                RistrettoPoint::vartime_double_scalar_mul_basepoint(&c[prev], ring[prev], &r[prev]);
+        c[(i + 1) % ring.len()] = {
+            let p = RistrettoPoint::vartime_double_scalar_mul_basepoint(&c[i], ring[i], &r[i]);
             let mut digest = digest.clone();
             digest.update(p.compress().as_bytes());
             Scalar::from_hash(digest)
