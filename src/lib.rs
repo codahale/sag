@@ -49,7 +49,7 @@ where
     }
 
     // Close the ring by calculating the correct challenge.
-    r[index] = alpha - c[0] * signer;
+    r[index] = alpha - c[index] * signer;
 
     // Return the first proof scalar and the ring of challenge scalars.
     (c[0], r)
