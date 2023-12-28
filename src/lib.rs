@@ -1,3 +1,31 @@
+//! Provides an implementation of Spontaneous Anonymous Group signatures (aka ring signatures) using
+//! Ristretto255.
+//!
+//! ```rust
+//! use curve25519_dalek::{RistrettoPoint, Scalar};
+//! use rand::rngs::OsRng;
+//! use sha2::{Digest, Sha512};
+//!
+//! // Imagine a group of people with secret keys and corresponding public keys.
+//! let a = Scalar::random(&mut OsRng);
+//! let a_pub = RistrettoPoint::mul_base(&a);
+//! let b = Scalar::random(&mut OsRng);
+//! let b_pub = RistrettoPoint::mul_base(&b);
+//! let c = Scalar::random(&mut OsRng);
+//! let c_pub = RistrettoPoint::mul_base(&c);
+//! let d = Scalar::random(&mut OsRng);
+//! let d_pub = RistrettoPoint::mul_base(&d);
+//!
+//! // One of them wants to sign a message as being from an anonymous member of that group.
+//! let m = Sha512::new().chain_update(b"I guess this could be a leak.");
+//!
+//! // They create a signature using the group's public keys.
+//! let sig = sag::sign(&[a_pub, b_pub, c_pub, d_pub], &b, m.clone(), OsRng);
+//!
+//! // It verifies as being a valid signature by one of the group but no one can determine who the
+//! // signer was individually.
+//! assert!(sag::verify(&[a_pub, b_pub, c_pub, d_pub], m, sig));
+//! ```
 use std::iter;
 
 use curve25519_dalek::{RistrettoPoint, Scalar};
