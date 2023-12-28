@@ -4,6 +4,11 @@ use curve25519_dalek::{RistrettoPoint, Scalar};
 use digest::{typenum::consts::U64, Digest};
 use rand_core::CryptoRngCore;
 
+/// Signs a message as an anonymous member of the given ring.
+///
+/// The ring must contain the signer's public key, and the digest should have been updated with the
+/// contents of the message to be signed. The public keys of the ring are appended to the message in
+/// lexical order (i.e. sorted by their encoded form) before the signature is calculated.
 pub fn sign<D>(
     ring: &[RistrettoPoint],
     signer: &Scalar,
@@ -50,6 +55,10 @@ where
     (c[0], r)
 }
 
+/// Verifies the signature of the given digest.
+///
+/// Returns `true` iff the signature was created of the given message by the owner of one of the
+/// private keys in the given ring.
 pub fn verify<D>(ring: &[RistrettoPoint], mut digest: D, (c0, r): (Scalar, Vec<Scalar>)) -> bool
 where
     D: Digest<OutputSize = U64> + Clone,
