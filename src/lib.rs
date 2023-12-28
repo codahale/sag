@@ -143,12 +143,14 @@ mod tests {
     #[test]
     fn round_trip() {
         let mut rng = ChaChaRng::seed_from_u64(0xDEADBEEF);
-        let (c, ring) = setup(&mut rng);
+        for _ in 0..100 {
+            let (c, ring) = setup(&mut rng);
 
-        let d = Sha512::new().chain_update(b"what a message");
-        let sig = sign(&ring, &c, d.clone(), rng);
+            let d = Sha512::new().chain_update(b"what a message");
+            let sig = sign(&ring, &c, d.clone(), &mut rng);
 
-        assert!(verify(&ring, d, sig));
+            assert!(verify(&ring, d, sig));
+        }
     }
 
     #[test]
