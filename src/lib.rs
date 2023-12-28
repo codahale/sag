@@ -36,7 +36,7 @@ where
     };
     for i in ((index + 1)..(index + ring.len())).map(|i| i % ring.len()) {
         c[(i + 1) % ring.len()] = {
-            let p = RistrettoPoint::vartime_double_scalar_mul_basepoint(&c[i], ring[i], &r[i]);
+            let p = (ring[i] * c[i]) + RistrettoPoint::mul_base(&r[i]);
             let mut digest = digest.clone();
             digest.update(p.compress().as_bytes());
             Scalar::from_hash(digest)
