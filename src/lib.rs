@@ -110,6 +110,9 @@ where
     c[0] == c0
 }
 
+/// Sorts the given ring of public keys lexically by their encoded forms, adds their encoded forms
+/// in lexical order to the given digest, and returns a list of pointers to the keys in lexical
+/// order.
 fn encode_ring<'ring>(
     ring: &'ring [RistrettoPoint],
     digest: &mut impl Digest,
